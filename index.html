@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: scroll;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .container {
+            width: 850px;
+            padding: 20px;
+            background-color: #fff;
+            overflow: scroll;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            resize: none;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #output {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <form id="myForm">
+        <h4>Prompt Generator</h4>
+        <div class="form-group">
+            <input type="text" id="name" name="name" placeholder="Hello, I am ready to help you craft the best possible prompt for your needs. What would you like the prompt to be about?"  required>
+        </div>
+<!--        <div class="form-group">-->
+<!--            <label for="email">Email:</label>-->
+<!--            <input type="text" id="email" name="email" required>-->
+<!--        </div>-->
+<!--        <div class="form-group">-->
+<!--            <label for="message">Message:</label>-->
+<!--            <textarea id="message" name="message" rows="4" required></textarea>-->
+<!--        </div>-->
+        <button type="submit">Submit</button>
+    </form>
+    <div id="output" style="overflow: scroll"></div>
+</div>
+
+<script>
+    document.getElementById('myForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const message = document.getElementById('name');
+
+
+
+        const url = "http://localhost:3020/request"
+         fetch(url,{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({message:message.value})
+        }).then(e=>e.json())
+        .then(data=>{
+            console.log(data)
+            const dataArray = data.response;
+
+            // Select the div element where you want to set the content
+            const divElement = document.getElementById('output');
+
+            // Create a string to hold the HTML content
+            let htmlContent = '';
+
+            // Iterate through the array and generate HTML content
+            dataArray.forEach(item => {
+                // Assuming each item in the array has a 'name' property
+                htmlContent += `<p style="float:left; width: 100%">${item.input}</p>`;
+                htmlContent += `<p style="text-align:right; width: 100%">${item.output}</p>`;
+            });
+
+            // Set the content of the div
+            divElement.innerHTML = htmlContent;
+        })
+    });
+    // function formatText(inputText) {
+    //     // Split the input text into paragraphs by newline characters
+    //     const paragraphs = inputText.split('\n');
+    //
+    //     // Create an HTML string to hold the formatted paragraphs
+    //     let formattedText = '';
+    //
+    //     // Iterate through each paragraph and wrap it in a <p> tag
+    //     paragraphs.forEach(paragraph => {
+    //         // Trim the paragraph to remove leading/trailing whitespace
+    //         const trimmedParagraph = paragraph.trim();
+    //         if (trimmedParagraph !== '') {
+    //             formattedText += `<p>${trimmedParagraph}</p>`;
+    //         }
+    //     });
+    //
+    //     return formattedText;
+    // }
+</script>
+
+</body>
+</html>
